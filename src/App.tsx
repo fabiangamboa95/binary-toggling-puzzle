@@ -30,6 +30,7 @@ const App = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
+      <div className="invisible grid grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9" />
       <div
         className={`grid grid-cols-${side} gap-3`}
         // style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
