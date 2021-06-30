@@ -1,29 +1,38 @@
 import { useState } from "react";
 import produce from "immer";
 
+const newBoard = (side: number): boolean[] => Array(side ** 2).fill(false);
+const defaultSide = 5;
+
 const App = () => {
-  const side = 5;
+  const [side, setSide] = useState(defaultSide);
   const [grid, setGrid] = useState(Array(side ** 2).fill(false));
 
   const onClick = (index: number) => {
     const row = Math.floor(index / side);
     const column = index % side;
+    console.log(row, column); // ! dev
     setGrid(
       produce(grid, (draft) => {
         for (let i = 0; i < side; i++) {
           draft[row * side + i] = !draft[row * side + i];
           draft[i * side + column] = !draft[i * side + column];
-          draft[index] = !draft[index];
         }
+        draft[index] = !draft[index];
       })
     );
+  };
+
+  const blankGame = (side: number) => {
+    setSide(side);
+    setGrid(newBoard(side));
   };
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
       <div
-        className={`grid grid-cols-${side} gap-3 grid-cols`}
-        style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
+        className={`grid grid-cols-${side} gap-3`}
+        // style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
       >
         {grid.map((value, index) => (
           <div
@@ -34,6 +43,18 @@ const App = () => {
             onClick={() => onClick(index)}
           />
         ))}
+      </div>
+      <div className="absolute bottom-0 h-20 bg-gray-400 w-full pt-3">
+        <div className="container mx-auto px-10">
+          Side:
+          <select className="mx-2" defaultValue={defaultSide}>
+            {[3, 4, 5, 6, 7, 8, 9].map((value) => (
+              <option key={value} onClick={() => blankGame(value)}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   );
