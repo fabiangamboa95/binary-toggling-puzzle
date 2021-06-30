@@ -2,7 +2,7 @@ import { useState } from "react";
 import produce from "immer";
 
 const App = () => {
-  const side = 4;
+  const side = 5;
   const [grid, setGrid] = useState(Array(side ** 2).fill(false));
 
   const onClick = (index: number) => {
