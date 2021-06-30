@@ -21,7 +21,10 @@ const App = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <div className={`grid grid-cols-${side} gap-3`}>
+      <div
+        className={`grid grid-cols-${side} gap-3 grid-cols`}
+        style={{ gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}
+      >
         {grid.map((value, index) => (
           <div
             className={`${
