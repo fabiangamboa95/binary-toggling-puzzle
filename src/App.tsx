@@ -7,6 +7,7 @@ const defaultSide = 5;
 const App = () => {
   const [side, setSide] = useState(defaultSide);
   const [grid, setGrid] = useState(Array(side ** 2).fill(false));
+  const [animate, setAnimate] = useState(false);
 
   const onClick = (index: number) => {
     const row = Math.floor(index / side);
@@ -39,9 +40,13 @@ const App = () => {
           <div
             className={`${
               value ? "bg-yellow-400" : "bg-black"
-            } rounded-full w-10 h-10`}
+            } rounded-full w-10 h-10 ${animate && " animate-ping"}`}
             key={index}
-            onClick={() => onClick(index)}
+            onClick={() => {
+              onClick(index);
+              setAnimate(true);
+            }}
+            onAnimationEnd={() => setAnimate(false)}
           />
         ))}
       </div>
