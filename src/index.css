@@ -1,0 +1,8 @@
+:root {
+  --bBlack: hsl(211, 35%, 42%);
+  --bWhite: hsl(36, 80%, 67%);
+}
+
+* {
+  margin: 0;
+}

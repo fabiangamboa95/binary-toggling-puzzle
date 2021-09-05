@@ -1,6 +1,6 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
-import { jsx } from "@emotion/react";
+import { jsx, css } from "@emotion/react";
 import { useState } from "react";
 import produce from "immer";
 
@@ -32,32 +32,62 @@ const App = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center">
-      {/* next hack worked but is a little ugly */}
-      <div className="invisible grid grid-cols-3 grid-cols-4 grid-cols-5 grid-cols-6 grid-cols-7 grid-cols-8 grid-cols-9" />
+    <div
+      css={css`
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      `}
+    >
       <div
-        className={`grid grid-cols-${side} gap-3`}
-        // style={{ gridTemplateColumns: "repeat(5, minmax(0, 1fr))" }}
+        css={css`
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh - 40px;
+        `}
       >
-        {grid.map((value, index) => (
-          <div
-            className={`${
-              value ? "bg-yellow-400" : "bg-black"
-            } rounded-full w-10 h-10 ${animate && " animate-ping"}`}
-            key={index}
-            onClick={() => {
-              onClick(index);
-              setAnimate(true);
-            }}
-            onAnimationEnd={() => setAnimate(false)}
-          />
-        ))}
+        <div
+          css={css`
+            display: grid;
+            grid-template-columns: repeat(${side}, minmax(0, 1fr));
+            gap: 20px;
+          `}
+        >
+          {grid.map((value, index) => (
+            <div
+              css={css`
+                background-color: var(${value ? "--bWhite" : "--bBlack"});
+                border-radius: 99px;
+                width: 50px;
+                height: 50px;
+                box-shadow: rgba(0, 0, 0, 0.5) -0.666667px 5px 5px;
+                border: 1px solid black;
+              `}
+              key={index}
+              onClick={() => {
+                onClick(index);
+                setAnimate(true);
+              }}
+              onAnimationEnd={() => setAnimate(false)}
+            />
+          ))}
+        </div>
       </div>
-      <div className="absolute bottom-0 h-20 bg-gray-400 w-full pt-3">
-        <div className="container mx-auto px-10">
+      <div
+        css={css`
+          height: 40px;
+          background-color: gray;
+          width: 100%;
+          padding-top: 3px;
+        `}
+      >
+        <div style={{ marginLeft: 30 }}>
           Side:
           <select
-            className="mx-2"
+            style={{ margin: "0 12px" }}
             defaultValue={defaultSide}
             onChange={(e) => blankGame(parseInt(e.target.value))}
           >
