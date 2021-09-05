@@ -3,14 +3,37 @@
 import { jsx, css } from "@emotion/react";
 import { useState } from "react";
 import produce from "immer";
+import { Transition, TransitionStatus } from "react-transition-group";
 
 const newBoard = (side: number): boolean[] => Array(side ** 2).fill(false);
 const defaultSide = 5;
 
+const duration = 150;
+
+const transitionStyles = {
+  entering: { transform: "scale(1.2)" },
+  entered: { transform: "scale(1)" },
+  exiting: { transform: "scale(1.2)" },
+  exited: { transform: "scale(1)" },
+  unmounted: {},
+};
+
+const delay = 60;
+
+const delayCI = (current: number, clicked: number, side: number): number => {
+  if (Math.floor(current / side) === Math.floor(clicked / side)) {
+    return Math.abs(current - clicked);
+  }
+  if (current % side === clicked % side) {
+    return Math.abs(Math.floor(current / side) - Math.floor(clicked / side));
+  }
+  return 0;
+};
+
 const App = () => {
   const [side, setSide] = useState(defaultSide);
   const [grid, setGrid] = useState(Array(side ** 2).fill(false));
-  const [animate, setAnimate] = useState(false);
+  const [clicked, setClicked] = useState(0);
 
   const onClick = (index: number) => {
     const row = Math.floor(index / side);
@@ -47,6 +70,7 @@ const App = () => {
           align-items: center;
           justify-content: center;
           height: 100vh - 40px;
+          background-color: #eee;
         `}
       >
         <div
@@ -57,22 +81,33 @@ const App = () => {
           `}
         >
           {grid.map((value, index) => (
-            <div
-              css={css`
-                background-color: var(${value ? "--bWhite" : "--bBlack"});
-                border-radius: 99px;
-                width: 50px;
-                height: 50px;
-                box-shadow: rgba(0, 0, 0, 0.5) -0.666667px 5px 5px;
-                border: 1px solid black;
-              `}
-              key={index}
-              onClick={() => {
-                onClick(index);
-                setAnimate(true);
-              }}
-              onAnimationEnd={() => setAnimate(false)}
-            />
+            <Transition
+              in={!!value}
+              timeout={duration + (delayCI(index, clicked, side) * delay) / 1.2}
+            >
+              {(state: TransitionStatus) => (
+                <div
+                  style={{ ...transitionStyles[state] }}
+                  css={css`
+                    background-color: var(${value ? "--bWhite" : "--bBlack"});
+                    border-radius: 99px;
+                    width: 50px;
+                    height: 50px;
+                    box-shadow: rgba(0, 0, 0, 0.5) -0.666667px 5px 5px;
+                    border: 1px solid black;
+                    // pop animation
+                    transition: all ${duration}ms ease-in-out;
+                    transition-delay: ${delayCI(index, clicked, side) *
+                    delay}ms;
+                  `}
+                  key={index}
+                  onClick={() => {
+                    setClicked(index);
+                    onClick(index);
+                  }}
+                />
+              )}
+            </Transition>
           ))}
         </div>
       </div>
